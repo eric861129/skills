@@ -1,70 +1,70 @@
 ---
 name: control-document-growth
-description: 當 Agent 準備建立、拆分、重寫、總結或交接專案文件時使用，尤其適用於同一主題已有 README、規格、ADR、runbook、計畫、研究或開發紀錄，或新增理由只是新階段、版本、日期、完成證明、方便整理或未來可能有用的情況。用於判斷應更新既有權威來源、建立一份必要的新文件，或不進行文件變更。
+description: Use when an agent is about to create, split, rewrite, summarize, or hand off project documentation, especially when the topic already has a README, spec, ADR, runbook, plan, research note, or dev log, or when the only reason for a new file is a new phase, version, date, proof of completion, convenience, or possible future use. Decides whether to update the existing source of truth, create one necessary new document, or leave the docs unchanged.
 ---
 
-# 控制文件增生
+# Control Document Growth
 
-## 核心原則
+## Core principles
 
-- 以資訊可被正確找到與維護為目標，不以文件數量或交付痕跡為目標。
-- 預設更新既有文件。找不到完美的放置位置，不等於必須新增文件。
-- 維持單一真實來源；不要在多份文件重複保存相同規則、狀態或決策。
-- 不要為了保留推理過程、工作紀錄或階段成果，自行建立使用者未要求的文件。
-- 使用者明確要求特定文件時，建立該文件，但不要再衍生摘要、補充版或交接版。
+- Aim for information that can be found and maintained correctly, not for document count or a paper trail of deliverables.
+- Update existing documents by default. Not finding a perfect place does not mean a new document is required.
+- Keep a single source of truth; do not store the same rule, status, or decision in multiple documents.
+- Do not create documents the user did not ask for just to preserve reasoning, work logs, or phase results.
+- When the user explicitly asks for a specific document, create it, but do not spin off summaries, supplements, or handoff versions.
 
-## 寫入前先盤點
+## Survey before writing
 
-1. 先查看現有文件的檔名、目錄與標題，再只讀取相關段落；不要一開始載入所有文件全文。
-2. 找出最接近的既有唯一真實來源，以及它的讀者、用途與維護生命週期。
-3. 將內容分類為：補充既有內容、取代過時內容、拆分過大內容，或建立獨立主題。
-4. 若既有文件可以清楚承接內容，直接更新該文件並停止新增檔案的評估。
+1. Look at the file names, directories, and headings of existing documents first, then read only the relevant sections; do not load every document in full up front.
+2. Find the closest existing single source of truth, along with its readers, purpose, and maintenance lifecycle.
+3. Classify the content as: adding to existing content, replacing outdated content, splitting oversized content, or a standalone topic.
+4. If an existing document can clearly hold the content, update that document and stop evaluating new files.
 
-## 新文件准入門檻
+## Gate for new documents
 
-只有在沒有合適的既有文件可以承接內容，且符合至少一項必要性時，才新增文件：
+Create a new document only when no suitable existing document can hold the content and at least one of these needs applies:
 
-- 讀者、維護者、權限或生命週期與既有文件明確不同。
-- 內容具有可獨立維護的穩定目的，放入既有文件會混淆其責任。
-- 既有文件已難以導覽或維護，拆出一個內聚主題能實質改善可讀性。
-- 專案慣例、工具鏈、法規或使用者明確要求必須使用獨立文件。
+- The readers, maintainers, permissions, or lifecycle clearly differ from those of existing documents.
+- The content has a stable purpose that can be maintained on its own, and putting it in an existing document would blur that document's responsibility.
+- An existing document has become hard to navigate or maintain, and splitting out one cohesive topic materially improves readability.
+- Project conventions, the toolchain, regulation, or the user explicitly require a separate document.
 
-以下理由本身不足以新增文件：
+These reasons alone are not enough to create a document:
 
-- 進入新階段、日期改變或版本名稱改變。
-- 想保留工作歷程、推理過程、暫存研究或完成證明。
-- 覺得新增檔案比整理既有章節更方便。
-- 想同時建立摘要、快速參考、完整版本與最終版本。
-- 未來可能有用，但目前沒有明確讀者或維護責任。
+- A new phase, a date change, or a version name change.
+- Wanting to keep work history, reasoning, scratch research, or proof of completion.
+- Feeling that a new file is easier than reorganizing existing sections.
+- Wanting a summary, a quick reference, a full version, and a final version at the same time.
+- It might be useful someday, but has no clear reader or maintainer today.
 
-## 更新與拆分規則
+## Updating and splitting
 
-- 優先新增或重整既有章節，並直接取代已失效的描述；不要在文件尾端無限追加補充說明。
-- 移動內容時，保留一份權威版本並更新既有連結；只有在權限與安全條件允許時，才移除確認無引用的重複內容。
-- 必須拆分時，只拆出一個職責內聚的主題，讓原文件保留摘要與直接連結。
-- 讓所有延伸文件由主要入口直接連結，避免多層索引與深層引用鏈。
-- 不要自行建立 README、CHANGELOG、快速參考、安裝指南或交接文件，除非它們是產品慣例或明確交付物。
-- 不要手動修改由程式產生的文件；應更新來源或產生流程。
+- Prefer adding or reorganizing sections in existing documents, and replace outdated text directly; do not keep appending addenda to the end of a document.
+- When moving content, keep one canonical version and update existing links; remove duplicates confirmed to have no references only when permissions and safety allow.
+- When a split is necessary, split out only one cohesive topic, and leave a summary and a direct link in the original document.
+- Link every secondary document directly from the main entry point; avoid multi-level indexes and deep reference chains.
+- Do not create a README, CHANGELOG, quick reference, install guide, or handoff document on your own unless it is a product convention or an explicit deliverable.
+- Do not hand-edit generated documents; update the source or the generation process.
 
-## 執行與回報
+## Execute and report
 
-1. 在動手前決定要更新的既有文件；若 Agent 主動新增使用者未指定的文件，先在目前對話中說明無法併入既有文件的原因與通過的准入門檻。
-2. 只修改完成目前需求所需的最少文件，不順便整理無關文件。
-3. 完成後檢查新內容是否造成重複規則、衝突來源、失效連結或未要求的衍生文件。
-4. 若沒有文件變更的必要，明確保留現狀並繼續原任務，不要為了使用本 Skill 而建立文件。
+1. Decide which existing document to update before writing; if the agent creates a document the user did not specify, first explain in the current conversation why the content cannot go into an existing document and which gate it passed.
+2. Change only the minimum set of documents the current request needs; do not tidy unrelated documents along the way.
+3. When done, check that the new content has not introduced duplicate rules, conflicting sources, broken links, or unrequested derivative documents.
+4. If no document change is needed, leave things as they are and continue the original task; do not create a document just to use this skill.
 
-寫入前先在目前對話建立以下決策紀錄；不要將它另存為專案文件：
+Before writing, record the following decision in the current conversation; do not save it as a project document:
 
 ```text
-決定：更新既有文件／新增一份文件／不變更文件
-權威來源：既有承接檔案，或新文件將承擔的唯一責任
-新增門檻：不適用，或已通過的具體門檻與證據
-變更範圍：本次會修改或新增的最少文件清單
-停止理由：內容已位於正確來源，且沒有必要的衍生文件
+Decision: update an existing document / create one document / no document change
+Canonical source: the existing file that takes the content, or the single responsibility the new document will own
+Creation gate: not applicable, or the specific gate passed and its evidence
+Change scope: the minimum list of documents this change will modify or add
+Stop reason: the content is in the correct source and no derivative document is needed
 ```
 
-若資訊仍不足以判斷權威來源或新增門檻，先完成必要的唯讀查證，不要用猜測填滿欄位。小型變更也使用相同欄位，但每欄一句即可，不要為了完整格式擴大盤點或建立正式 plan。
+Write the labels and values in the conversation's language. If the information is still insufficient to determine the canonical source or the creation gate, finish the necessary read-only checks first; do not fill fields with guesses. Small changes use the same fields at one sentence each; do not expand the survey or create a formal plan just to complete the format.
 
-## 停止條件
+## Stop condition
 
-當需求已放入正確的唯一真實來源、必要連結有效，且沒有重複內容時，立即停止文件工作。除非使用者要求，不要再建立摘要、歷程、索引、交接或後續規劃文件。
+Stop document work as soon as the request sits in the correct single source of truth, required links work, and nothing is duplicated. Unless the user asks, do not create summaries, history, indexes, handoffs, or follow-up planning documents.

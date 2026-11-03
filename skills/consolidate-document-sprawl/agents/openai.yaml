@@ -1,4 +1,4 @@
 interface:
-  display_name: "整併過度堆疊文件"
-  short_description: "盤點、整併並安全清除重複、過時與失去用途的專案文件"
-  default_prompt: "使用 $consolidate-document-sprawl 盤點這個專案的文件堆疊，提出可確認的整併清單，並在核准後安全完成整理。"
+  display_name: "Consolidate Document Sprawl"
+  short_description: "Inventory, merge, and safely remove duplicate and stale docs"
+  default_prompt: "Use $consolidate-document-sprawl to inventory this project's document sprawl, propose a consolidation list I can approve, and finish the cleanup safely after approval."

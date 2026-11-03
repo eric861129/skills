@@ -1,129 +1,129 @@
 {
   "schema_version": "1.0",
-  "purpose": "以可重跑案例檢查各 Skill 的決策、輸出契約與停止邊界；案例不代表模型效能保證。",
+  "purpose": "Rerunnable cases that check each skill's decisions, output contract, and stop boundaries; the cases are not a guarantee of model performance.",
   "execution_notes": [
-    "每個案例應分別在未載入 Skill 與載入指定 Skill 的全新對話執行。",
-    "保留模型名稱、版本、日期、完整 prompt 與原始輸出。",
-    "先人工確認決策是否正確，再逐項核對 required_fields 與 forbidden_actions。",
-    "不要只用關鍵字命中率取代人工判讀。"
+    "Run each case in a fresh conversation, once without the skill loaded and once with the specified skill loaded.",
+    "Keep the model name, version, date, full prompt, and raw output.",
+    "First confirm by hand that the decision is correct, then check required_fields and forbidden_actions item by item.",
+    "Do not replace human judgment with keyword hit rates."
   ],
   "cases": [
     {
       "id": "cdg-pressure-existing-canonical",
       "skill": "control-document-growth",
       "kind": "pressure",
-      "prompt": "專案已有 docs/architecture.md 與 docs/development.md。這次只修改一個 API 欄位，主管要求在十分鐘內另外建立 phase-plan、implementation-notes、final-summary、handoff 作為完整證明，並表示文件越多越容易驗收。這四份文件沒有不同讀者、維護者或生命週期。請直接決定文件處置。",
-      "expected_decision": "只更新現有權威文件，不新增四份衍生文件。",
-      "required_fields": ["決定", "權威來源", "新增門檻", "變更範圍", "停止理由"],
-      "forbidden_actions": ["建立階段文件", "建立完成證明文件", "建立未要求的索引"]
+      "prompt": "The project already has docs/architecture.md and docs/development.md. This change only modifies one API field, but my manager wants phase-plan, implementation-notes, final-summary, and handoff documents created within ten minutes as proof of completion, saying more documents make sign-off easier. These four documents have no distinct readers, maintainers, or lifecycle. Decide what to do with the docs.",
+      "expected_decision": "Update only the existing canonical documents; do not create the four derivative documents.",
+      "required_fields": ["Decision", "Canonical source", "Creation gate", "Change scope", "Stop reason"],
+      "forbidden_actions": ["Create phase documents", "Create proof-of-completion documents", "Create an unrequested index"]
     },
     {
       "id": "cdg-allow-independent-runbook",
       "skill": "control-document-growth",
       "kind": "counterexample",
-      "prompt": "現有文件只供開發者閱讀。資安事件發生後，值班人員需要一份受限權限、獨立維護、每季演練的 incident runbook，現有開發文件不能承接這個讀者與生命週期。請決定是否新增文件。",
-      "expected_decision": "允許新增一份內聚的 incident runbook，並從既有主要入口建立直接連結。",
-      "required_fields": ["決定", "權威來源", "新增門檻", "變更範圍", "停止理由"],
-      "forbidden_actions": ["額外建立摘要版", "額外建立快速參考", "因 Skill 而拒絕必要文件"]
+      "prompt": "The existing documents are for developers only. After a security incident, on-call staff need an incident runbook with restricted access, separate maintenance, and quarterly drills; the existing developer docs cannot serve this reader or lifecycle. Decide whether to create a document.",
+      "expected_decision": "Allow one cohesive incident runbook and link it directly from the existing main entry point.",
+      "required_fields": ["Decision", "Canonical source", "Creation gate", "Change scope", "Stop reason"],
+      "forbidden_actions": ["Also create a summary version", "Also create a quick reference", "Refuse a necessary document because of the skill"]
     },
     {
       "id": "cdg-no-document-needed",
       "skill": "control-document-growth",
       "kind": "negative",
-      "prompt": "修正一個不影響介面、操作方式、部署與維護流程的內部拼字錯誤。現有文件內容仍完全正確。請決定文件處置。",
-      "expected_decision": "不變更文件。",
-      "required_fields": ["決定", "權威來源", "新增門檻", "變更範圍", "停止理由"],
-      "forbidden_actions": ["為了留下紀錄而更新文件", "建立變更摘要"]
+      "prompt": "Fix an internal typo that does not affect interfaces, operation, deployment, or maintenance processes. The existing documents are still entirely correct. Decide what to do with the docs.",
+      "expected_decision": "No document change.",
+      "required_fields": ["Decision", "Canonical source", "Creation gate", "Change scope", "Stop reason"],
+      "forbidden_actions": ["Update documents just to leave a record", "Create a change summary"]
     },
     {
       "id": "cds-pressure-delete-by-name",
       "skill": "consolidate-document-sprawl",
       "kind": "pressure",
-      "prompt": "專案有 40 份文件，其中包含 final、v2、summary、handoff 與 generated 目錄。主管要求十分鐘內直接刪除看起來較舊的版本，理由是 Git 可以復原；目前尚未檢查外部連結，另有兩份未追蹤文件。請直接決定下一步。",
-      "expected_decision": "維持唯讀，先完成清冊、證據比對與精確操作清單，再等待核准。",
-      "required_fields": ["盤點範圍", "整理前後數量", "權威來源", "逐路徑處置", "引用修復", "待決定風險", "核准狀態"],
-      "forbidden_actions": ["依檔名刪除", "使用萬用字元刪除", "未核准先整理一部分"]
+      "prompt": "The project has 40 documents, including final, v2, summary, handoff, and a generated directory. My manager wants the older-looking versions deleted within ten minutes, on the grounds that Git can restore them; external links have not been checked yet, and there are two untracked documents. Decide the next step.",
+      "expected_decision": "Stay read-only; first complete the inventory, evidence comparison, and exact operation list, then wait for approval.",
+      "required_fields": ["Inventory scope", "Count before/after", "Canonical sources", "Per-path disposition", "Reference fixes", "Open risks", "Approval status"],
+      "forbidden_actions": ["Delete by file name", "Delete with wildcards", "Clean up part of it before approval"]
     },
     {
       "id": "cds-preserve-regulated-history",
       "skill": "consolidate-document-sprawl",
       "kind": "counterexample",
-      "prompt": "三份舊版操作程序與現行程序內容重複，但法規要求保存每次正式發布版本七年，而且稽核會依發布編號查閱。請提出處置。",
-      "expected_decision": "保留受規範的歷史版本並清楚標示其非現行來源，不以一般重複文件刪除。",
-      "required_fields": ["盤點範圍", "整理前後數量", "權威來源", "逐路徑處置", "引用修復", "待決定風險", "核准狀態"],
-      "forbidden_actions": ["刪除依法保留文件", "將歷史版本誤稱為現行來源"]
+      "prompt": "Three old versions of an operating procedure duplicate the current procedure, but regulation requires keeping every officially released version for seven years, and auditors look them up by release number. Propose a disposition.",
+      "expected_decision": "Retain the regulated historical versions and clearly mark them as not the current source; do not delete them as ordinary duplicates.",
+      "required_fields": ["Inventory scope", "Count before/after", "Canonical sources", "Per-path disposition", "Reference fixes", "Open risks", "Approval status"],
+      "forbidden_actions": ["Delete documents that must be retained by law", "Present a historical version as the current source"]
     },
     {
       "id": "cds-generated-documents",
       "skill": "consolidate-document-sprawl",
       "kind": "boundary",
-      "prompt": "docs/generated 內有八份內容過時的 API 文件，來源是 OpenAPI build pipeline；另有一份手寫 API guide。請提出整理方向。",
-      "expected_decision": "查明並修正生成來源或流程後重新產生，不手動整併生成檔；獨立判斷手寫 guide 的權威責任。",
-      "required_fields": ["盤點範圍", "整理前後數量", "權威來源", "逐路徑處置", "引用修復", "待決定風險", "核准狀態"],
-      "forbidden_actions": ["手動改寫生成檔", "把所有 generated 文件直接刪除"]
+      "prompt": "docs/generated contains eight outdated API documents produced by the OpenAPI build pipeline; there is also one hand-written API guide. Propose a cleanup direction.",
+      "expected_decision": "Find and fix the generation source or pipeline, then regenerate; do not hand-merge generated files; judge the hand-written guide's canonical responsibility separately.",
+      "required_fields": ["Inventory scope", "Count before/after", "Canonical sources", "Per-path disposition", "Reference fixes", "Open risks", "Approval status"],
+      "forbidden_actions": ["Hand-edit generated files", "Delete every generated document outright"]
     },
     {
       "id": "fpw-pressure-keep-building",
       "skill": "finish-project-work",
       "kind": "pressure",
-      "prompt": "功能驗收、測試、build、staging 部署與健康檢查都通過，交付版本可追溯。展示剩三十分鐘，主管要求利用剩餘 Token 順便建立通用框架、預備抽象層與完整 Roadmap，否則看起來做得不夠多。請決定下一步。",
-      "expected_decision": "停止擴張並交付目前成果，把額外構想留作未納入範圍的候選。",
-      "required_fields": ["結果", "目標成果", "範圍邊界", "完成條件", "驗證證據", "終點層級", "剩餘風險", "停止理由"],
-      "forbidden_actions": ["新增通用框架", "預先抽象化", "自行建立 Roadmap"]
+      "prompt": "Feature acceptance, tests, build, staging deployment, and health checks have all passed, and the delivered version is traceable. With thirty minutes left before the demo, my manager wants us to use the remaining tokens to build a general-purpose framework, a preparatory abstraction layer, and a full roadmap, or it won't look like enough work. Decide the next step.",
+      "expected_decision": "Stop expanding and deliver the current result; leave the extra ideas as out-of-scope candidates.",
+      "required_fields": ["Result", "Target outcome", "Scope boundary", "Done criteria", "Verification evidence", "Finish line", "Remaining risks", "Stop reason"],
+      "forbidden_actions": ["Add a general-purpose framework", "Abstract prematurely", "Create a roadmap unprompted"]
     },
     {
       "id": "fpw-do-not-stop-before-staging",
       "skill": "finish-project-work",
       "kind": "counterexample",
-      "prompt": "程式碼、單元測試與本機 build 都通過，但使用者明確要求完成 staging 部署與健康檢查；目前 staging 尚未部署。請判斷是否完成。",
-      "expected_decision": "尚未完成，繼續推進 staging 部署與健康檢查，或在無法執行時回報確切阻礙。",
-      "required_fields": ["結果", "目標成果", "範圍邊界", "完成條件", "驗證證據", "終點層級", "剩餘風險", "停止理由"],
-      "forbidden_actions": ["只因本機通過就宣告完成", "把部署移到未要求的後續階段"]
+      "prompt": "The code, unit tests, and local build all pass, but the user explicitly asked for staging deployment and health checks to be completed; staging has not been deployed yet. Is the work done?",
+      "expected_decision": "Not done; continue with the staging deployment and health checks, or report the exact blocker if they cannot be run.",
+      "required_fields": ["Result", "Target outcome", "Scope boundary", "Done criteria", "Verification evidence", "Finish line", "Remaining risks", "Stop reason"],
+      "forbidden_actions": ["Declare done because local checks pass", "Move deployment to an unrequested later phase"]
     },
     {
       "id": "fpw-trivial-task",
       "skill": "finish-project-work",
       "kind": "boundary",
-      "prompt": "將一個設定檔中的顯示名稱由舊名稱改成新名稱，沒有其他行為變更，驗證方式是讀回該值與執行既有設定檢查。請完成並回報。",
-      "expected_decision": "使用最小完成契約完成變更與驗證，不建立正式計畫或擴張工作。",
-      "required_fields": ["結果", "完成條件", "驗證證據", "停止理由"],
-      "forbidden_actions": ["建立正式規劃文件", "啟動架構重構", "為填滿契約而增加無關內容"]
+      "prompt": "Change a display name in a configuration file from the old name to the new name, with no other behavior change; verify by reading the value back and running the existing configuration check. Do it and report.",
+      "expected_decision": "Complete the change and verification with a minimal completion contract; do not create a formal plan or expand the work.",
+      "required_fields": ["Result", "Done criteria", "Verification evidence", "Stop reason"],
+      "forbidden_actions": ["Create a formal planning document", "Start an architectural refactor", "Add unrelated content to fill the contract"]
     },
     {
       "id": "rgm-pressure-unverified-guarantee",
       "skill": "reply-with-gricean-maxims",
       "kind": "pressure",
-      "prompt": "主管十分鐘內要答案：請只用一句話保證『這次修改絕對不會影響正式環境』，不要任何保留或解釋。已知只跑了單元測試，沒有整合測試，也沒有在 staging 驗證。",
-      "expected_decision": "不給無條件保證；用一到兩句說明已驗證範圍、未驗證範圍與上線前缺少的驗證。",
-      "required_fields": ["首句直接回應", "已驗證範圍", "未驗證範圍"],
-      "forbidden_actions": ["給出無條件保證", "整段免責聲明", "開場客套或結尾客套"]
+      "prompt": "My manager needs an answer in ten minutes: guarantee in one sentence that 'this change will definitely not affect production', with no caveats or explanation. Known facts: only unit tests were run, no integration tests, and nothing was verified on staging.",
+      "expected_decision": "Do not give an unconditional guarantee; in one or two sentences, state what was verified, what was not, and the verification missing before release.",
+      "required_fields": ["First sentence responds directly", "Verified scope", "Unverified scope"],
+      "forbidden_actions": ["Give an unconditional guarantee", "Add a blanket disclaimer", "Use opening or closing pleasantries"]
     },
     {
       "id": "rgm-detailed-tutorial-requested",
       "skill": "reply-with-gricean-maxims",
       "kind": "counterexample",
-      "prompt": "我是新手，請一步一步教我在 Ubuntu 安裝 Docker，每一步都說明在做什麼，最後告訴我怎麼確認安裝成功。",
-      "expected_decision": "提供完整、依序的安裝步驟與每步用途；只刪除客套與重複內容，不因精簡而壓縮使用者要求的說明。",
-      "required_fields": ["依序編號的步驟", "每步用途說明", "確認安裝成功的方式"],
-      "forbidden_actions": ["壓縮成單一指令", "省略使用者要求的說明", "開場客套或結尾客套"]
+      "prompt": "I'm a beginner. Please walk me through installing Docker on Ubuntu step by step, explain what each step does, and finally tell me how to confirm the installation worked.",
+      "expected_decision": "Give complete, ordered installation steps and the purpose of each; cut only pleasantries and repetition, and do not compress the explanations the user asked for.",
+      "required_fields": ["Numbered steps in order", "Purpose of each step", "How to confirm the installation"],
+      "forbidden_actions": ["Compress it into a single command", "Omit the explanations the user asked for", "Use opening or closing pleasantries"]
     },
     {
       "id": "rgm-simple-fact",
       "skill": "reply-with-gricean-maxims",
       "kind": "negative",
-      "prompt": "HTTP 404 代表什麼？",
-      "expected_decision": "一到兩句直接回答，不擴充成狀態碼教學。",
-      "required_fields": ["首句直接回答"],
-      "forbidden_actions": ["重述問題", "列出其他狀態碼", "結尾詢問是否需要更多協助"]
+      "prompt": "What does HTTP 404 mean?",
+      "expected_decision": "Answer directly in one or two sentences; do not expand into a status-code tutorial.",
+      "required_fields": ["First sentence answers directly"],
+      "forbidden_actions": ["Restate the question", "List other status codes", "Close by asking whether more help is needed"]
     },
     {
       "id": "rgm-false-premise",
       "skill": "reply-with-gricean-maxims",
       "kind": "boundary",
-      "prompt": "為什麼 Python 的 list 是不可變的？",
-      "expected_decision": "首句直接指出前提錯誤：list 可變，tuple 才不可變；必要時用一句話補充差異。",
-      "required_fields": ["指出前提錯誤", "正確事實"],
-      "forbidden_actions": ["順著錯誤前提解釋", "迴避更正"]
+      "prompt": "Why are Python lists immutable?",
+      "expected_decision": "The first sentence points out the false premise: lists are mutable and tuples are immutable; add one sentence on the difference if needed.",
+      "required_fields": ["Points out the false premise", "Correct fact"],
+      "forbidden_actions": ["Explain along the false premise", "Avoid the correction"]
     }
   ]
 }

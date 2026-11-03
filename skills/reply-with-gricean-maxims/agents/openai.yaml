@@ -1,4 +1,4 @@
 interface:
-  display_name: "格萊斯準則回覆"
-  short_description: "以真實、適量、切題、清晰四項準則回覆，減少廢話但不漏掉必要資訊"
-  default_prompt: "使用 $reply-with-gricean-maxims 回覆：先給答案，只說有根據的話，提供剛好足夠的資訊，並保持切題與清楚。"
+  display_name: "Reply with Gricean Maxims"
+  short_description: "Replies that are true, sufficient, relevant, and clear"
+  default_prompt: "Use $reply-with-gricean-maxims to reply: answer first, say only what is grounded, give exactly enough information, and stay relevant and clear."

@@ -1,4 +1,4 @@
 interface:
-  display_name: "完成專案工作"
-  short_description: "以完成條件驅動交付，限制無止境打底、擴張與追加開發"
-  default_prompt: "使用 $finish-project-work 為這項工作建立完成條件、推進最短交付路徑，並在驗證達標後停止。"
+  display_name: "Finish Project Work"
+  short_description: "Deliver by done criteria; curb endless groundwork and scope creep"
+  default_prompt: "Use $finish-project-work to set done criteria for this work, take the shortest path to delivery, and stop once verification passes."

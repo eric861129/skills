@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""唯讀盤點專案文件，輸出可供後續人工判讀的機械化事證。"""
+"""Read-only inventory of project documents as mechanical evidence for human review."""
 
 from __future__ import annotations
 
@@ -47,32 +47,35 @@ HEADING_PATTERN = re.compile(r"^#{1,6}\s+(.+?)\s*$", re.MULTILINE)
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="唯讀盤點文件路徑、雜湊、標題、Git 狀態、連結與生成線索。"
+        description=(
+            "Read-only inventory of document paths, hashes, headings, Git status, "
+            "links, and generation hints."
+        )
     )
-    parser.add_argument("root", help="要盤點的專案根目錄")
+    parser.add_argument("root", help="project root directory to inventory")
     parser.add_argument(
         "--format",
         choices=("json", "text"),
         default="json",
-        help="輸出格式，預設為 json",
+        help="output format (default: json)",
     )
     parser.add_argument(
         "--extensions",
         default=",".join(sorted(DEFAULT_EXTENSIONS)),
-        help="以逗號分隔的副檔名，例如 .md,.mdx,.rst",
+        help="comma-separated file extensions, e.g. .md,.mdx,.rst",
     )
     parser.add_argument(
         "--exclude",
         action="append",
         default=[],
         metavar="RELATIVE_PATH",
-        help="額外排除的目錄名稱或根目錄相對路徑，可重複使用",
+        help="extra directory name or root-relative path to exclude; repeatable",
     )
     parser.add_argument(
         "--max-bytes",
         type=int,
         default=5_000_000,
-        help="單一文件讀取上限，預設 5000000 bytes",
+        help="maximum bytes to read per document (default: 5000000)",
     )
     return parser.parse_args()
 
@@ -85,7 +88,7 @@ def normalize_extensions(raw: str) -> set[str]:
             continue
         extensions.add(item if item.startswith(".") else f".{item}")
     if not extensions:
-        raise ValueError("至少需要一個文件副檔名")
+        raise ValueError("at least one document extension is required")
     return extensions
 
 
@@ -339,9 +342,11 @@ def build_report(
         "root": str(root),
         "read_only": True,
         "limitations": [
-            "完全相同雜湊不代表文件可以安全刪除。",
-            "此工具不判斷語意重複、內容正確性、權威來源、法規保存或外部引用。",
-            "hints 只供盤點排序，不得單獨作為刪除、搬移或改名依據。",
+            "Identical hashes do not mean a document is safe to delete.",
+            "This tool does not judge semantic duplication, content accuracy, "
+            "canonical sources, legal retention, or external references.",
+            "hints are only for ordering the inventory and must never be the sole "
+            "basis for deleting, moving, or renaming.",
         ],
         "summary": {
             "document_count": len(documents),
@@ -387,16 +392,16 @@ def main() -> int:
     args = parse_args()
     root = Path(args.root).expanduser().resolve()
     if not root.is_dir():
-        print(f"錯誤：找不到專案目錄：{root}", file=sys.stderr)
+        print(f"error: project directory not found: {root}", file=sys.stderr)
         return 2
     if args.max_bytes <= 0:
-        print("錯誤：--max-bytes 必須大於 0", file=sys.stderr)
+        print("error: --max-bytes must be greater than 0", file=sys.stderr)
         return 2
 
     try:
         extensions = normalize_extensions(args.extensions)
     except ValueError as error:
-        print(f"錯誤：{error}", file=sys.stderr)
+        print(f"error: {error}", file=sys.stderr)
         return 2
     additional_excludes = {
         item.strip().replace("\\", "/").strip("/")

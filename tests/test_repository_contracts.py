@@ -47,6 +47,24 @@ class RepositoryContractsTests(unittest.TestCase):
             self.assertIn("short_description:", interface_text)
             self.assertIn(f"${skill}", interface_text)
 
+    def test_traditional_chinese_translations_mirror_english_skills(self) -> None:
+        heading_pattern = r"(?m)^(#{1,3}) "
+        for skill in SKILLS:
+            english_text = (SKILLS_ROOT / skill / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            chinese_text = (SKILLS_ROOT / skill / "SKILL.zh-TW.md").read_text(
+                encoding="utf-8"
+            )
+
+            self.assertRegex(chinese_text, rf"(?m)^name: {re.escape(skill)}$")
+            self.assertRegex(chinese_text, r"(?m)^description: .+$")
+            self.assertEqual(
+                re.findall(heading_pattern, english_text),
+                re.findall(heading_pattern, chinese_text),
+                f"{skill}: SKILL.md and SKILL.zh-TW.md headings are out of sync",
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

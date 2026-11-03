@@ -1,103 +1,103 @@
 ---
 name: consolidate-document-sprawl
-description: 當專案文件已經過多、同一主題出現 final、v2、日期版、summary、handoff 或 archive 堆疊，找不到唯一真實來源，文件互相矛盾、失去讀者、導覽困難，或使用者要求完整整理既有 Markdown、規格、計畫、ADR、README、runbook、研究與開發紀錄時使用。用於需要以證據盤點、整併並安全處理既有文件的情況。
+description: Use when a project has too many documents, such as the same topic piled up as final, v2, dated, summary, handoff, or archive copies, no single source of truth, documents that contradict each other, have lost their readers, or are hard to navigate, or when the user asks for a full cleanup of existing Markdown, specs, plans, ADRs, READMEs, runbooks, research, and dev logs. For inventorying, consolidating, and safely disposing of existing documents based on evidence.
 ---
 
-# 整併過度堆疊文件
+# Consolidate Document Sprawl
 
-## 整理目標
+## Goals
 
-- 真正降低文件數量與維護成本，不要只是把舊文件搬進新的封存目錄。
-- 讓每個保留文件都有明確用途、讀者、維護生命週期與唯一真實來源責任。
-- 保留仍正確且具有獨特價值的內容，移除重複、失效、矛盾與沒有維護價值的內容。
-- 先完成唯讀盤點與整併提案，再等待使用者核准精確操作清單。
-- 預設在目前對話或任務計畫中回報盤點，不要為了整理文件而再建立盤點報告、遷移紀錄或新索引文件。
+- Actually reduce document count and maintenance cost; do not just move old documents into a new archive folder.
+- Give every kept document a clear purpose, reader, maintenance lifecycle, and single-source-of-truth responsibility.
+- Keep content that is still correct and uniquely valuable; remove duplicated, stale, contradictory, and unmaintained content.
+- Finish a read-only inventory and consolidation proposal first, then wait for the user to approve an exact list of operations.
+- Report the inventory in the current conversation or task plan by default; do not create an inventory report, migration log, or new index document to tidy documents.
 
-## 先確認範圍與安全條件
+## Confirm scope and safety first
 
-1. 檢查適用的專案指示、版本控制狀態、文件來源與產生流程，保留使用者的無關變更。
-2. 確認盤點範圍與文件類型；將第三方、建置輸出、快取與自動產生文件分開處理。
-3. 確認哪些文件受法規、稽核、合約、版本發佈或外部連結約束，不要將它們視為一般重複文件。
-4. 記錄整理前的文件數量與主要入口，但不要把這份清單寫成新的專案文件。
-5. 在刪除前確認版本控制或其他可恢復來源；未納入版本控制且無備份的文件必須個別取得確認。
+1. Check applicable project instructions, version-control status, document sources, and generation pipelines; preserve the user's unrelated changes.
+2. Confirm the inventory scope and document types; handle third-party, build output, cache, and auto-generated documents separately.
+3. Identify documents bound by regulation, audit, contract, release versioning, or external links, and do not treat them as ordinary duplicates.
+4. Record the document count and main entry points before cleanup, but do not write that list as a new project document.
+5. Before deleting, confirm version control or another recoverable source; files that are untracked and not backed up need individual confirmation.
 
-除非使用者另有要求，只整理文件與其導覽、metadata 或連結。可以唯讀檢查程式碼、設定、測試與執行結果以判斷文件真實性，但不要順便修改產品功能、資料或架構。
+Unless the user asks otherwise, touch only documents and their navigation, metadata, or links. You may read code, configuration, tests, and run results to judge whether documents are accurate, but do not modify product features, data, or architecture along the way.
 
-## 建立文件清冊
+## Build a document inventory
 
-先列出檔名、路徑、標題與連結關係，再只讀取需要比較的內容；不要一開始把所有文件全文載入 context。
+List file names, paths, headings, and link relationships first, then read only the content that needs comparing; do not load every document into context at the start.
 
-若 Skill 目錄內有 `scripts/inventory_documents.py`，優先從專案根目錄執行唯讀盤點：
+If the skill directory contains `scripts/inventory_documents.py`, prefer running the read-only inventory from the project root:
 
 ```text
 python <skill-directory>/scripts/inventory_documents.py <project-root> --format json
 ```
 
-先執行 `--help` 確認參數。腳本只輸出 stdout，不應建立或修改專案文件；它提供路徑、標題、雜湊、Git 狀態、連結、編碼與生成線索。完全相同雜湊、檔名提示或失效連結都只是調查線索，不能取代語意比較、權威來源判斷、保存義務確認或刪除核准。若環境無法執行腳本，改以其他唯讀方式完成相同盤點，不要因此降低安全閘門。
+Run `--help` first to confirm the arguments. The script writes only to stdout and must not create or modify project documents; it reports paths, headings, hashes, Git status, links, encodings, and generation hints. Identical hashes, file-name hints, or broken links are only leads; they do not replace semantic comparison, canonical-source judgment, retention checks, or deletion approval. If the script cannot run in this environment, complete the same inventory by other read-only means; do not lower the safety gates because of it.
 
-對每份文件判斷：
+For each document, determine:
 
-- 路徑、用途、主要讀者與維護生命週期。
-- 它是手寫來源、自動產生結果、外部複本，還是暫時工作產物。
-- 是否被主要入口、其他文件、程式、CI、發佈流程或外部系統引用。
-- 是否包含其他文件沒有的正確內容。
-- 與哪些文件重複、矛盾或形成舊版／新版堆疊。
-- 建議保留、整併、移除、依法保留、重新產生或等待決定。
+- Its path, purpose, primary reader, and maintenance lifecycle.
+- Whether it is a hand-written source, a generated result, an external copy, or a temporary work product.
+- Whether it is referenced by the main entry point, other documents, code, CI, release pipelines, or external systems.
+- Whether it contains correct content that no other document has.
+- Which documents it duplicates, contradicts, or stacks with as old and new versions.
+- Whether to keep, merge, remove, retain for compliance, regenerate, or hold for a decision.
 
-判斷權威來源時，優先依據目前程式碼、設定、資料模型、產生流程、測試與運行證據，再考慮維護中的正式文件與 Git 歷史。不要因檔名含有 `final`、`v2`、日期較新或內容較長，就自動判定它最正確。
+When determining the canonical source, rely first on current code, configuration, data models, generation pipelines, tests, and runtime evidence, then on maintained official documents and Git history. Do not assume a file is the most correct because its name contains `final` or `v2`, its date is newer, or it is longer.
 
-## 分類與整併規則
+## Classification and consolidation rules
 
-將每份文件歸入一個主要處置：
+Assign each document one primary disposition:
 
-- **保留**：已是清楚、正確且仍被維護的權威來源。
-- **整併**：把獨特且仍正確的內容移入指定權威文件，再移除重複來源。
-- **修正後保留**：責任正確，但內容、導覽或引用需要更新。
-- **移除**：完全重複、已失效、只有過程紀錄，或沒有明確讀者與維護責任。
-- **依法或依約保留**：因稽核、法規、版本或外部承諾不能刪除，並明確標示其非現行來源。
-- **重新產生**：屬於生成結果，應修正來源或流程後重新產生，不要手動整併生成檔。
-- **等待決定**：存在無法由證據解決的矛盾、外部引用或所有權問題。
+- **Keep**: already a clear, correct, and maintained canonical source.
+- **Merge**: move the unique, still-correct content into the designated canonical document, then remove the duplicate source.
+- **Fix and keep**: the responsibility is right, but the content, navigation, or references need updating.
+- **Remove**: fully duplicated, obsolete, only a process log, or without a clear reader and maintainer.
+- **Retain for compliance**: cannot be deleted because of audit, regulation, versioning, or external commitments; clearly mark it as not the current source.
+- **Regenerate**: a generated result; fix the source or pipeline and regenerate instead of hand-merging generated files.
+- **Pending decision**: involves a contradiction, external reference, or ownership question that evidence cannot resolve.
 
-遵守以下限制：
+Follow these limits:
 
-- 預設把內容收斂回現有權威文件，不要用建立新文件解決文件過多。
-- 只有在沒有任何既有文件能合理承擔權威來源時，才提出一份新的 canonical document，並說明不可併入的原因。
-- 不要以「全部移到 archive」代替判斷；只有確有保存義務時才封存。
-- 不要在整理過程順便把大型文件拆成更多小檔，除非使用者明確要求且拆分確實改善責任邊界。
-- 不要用字數、修改日期或檔名相似度單獨決定刪除；必須確認內容、引用與權威來源。
+- By default, converge content back into existing canonical documents; do not solve too many documents by creating new ones.
+- Propose a new canonical document only when no existing document can reasonably serve as the canonical source, and explain why the content cannot be merged.
+- Do not substitute "move everything to archive" for judgment; archive only where there is a retention obligation.
+- Do not split large documents into more small files during cleanup unless the user explicitly asks and the split genuinely improves ownership boundaries.
+- Do not decide deletions on word count, modification date, or file-name similarity alone; confirm the content, references, and canonical source.
 
-## 核准閘門
+## Approval gate
 
-每次回報文件整理決策，都依下列順序輸出七個必要欄位。在任何刪除、搬移、改名或大範圍重寫前，先在目前對話提出完整整理提案；不要另存為專案報告。若尚未取得某欄位的證據，該欄明確填寫「待唯讀盤點」，不要省略欄位或用推測補值。
+Every time you report document-cleanup decisions, output these seven required fields in this order. Before any delete, move, rename, or large rewrite, present the full cleanup proposal in the current conversation; do not save it as a project report. If evidence for a field is not yet available, write "pending read-only inventory" in that field; do not omit the field or fill it with guesses.
 
 ```text
-盤點範圍（必要）：涵蓋與排除的目錄、文件類型及生成來源
-整理前後數量（必要）：目前文件數／核准後預期文件數
-權威來源（必要）：每份保留文件與其唯一責任
-逐路徑處置（必要）：明確路徑／保留、整併、修正、移除、依法保留、重新產生或等待決定／理由／獨特內容去向
-引用修復（必要）：需更新的內部連結、導覽、metadata、CI、產生流程與已知外部引用
-待決定風險（必要）：無法由現有證據解決的矛盾、保存義務、所有權或未備份內容
-核准狀態（必要）：尚未核准；等待使用者確認上述精確清單
+Inventory scope (required): directories, document types, and generation sources included and excluded
+Count before/after (required): current document count / expected count after approval
+Canonical sources (required): each kept document and its single responsibility
+Per-path disposition (required): exact path / keep, merge, fix and keep, remove, retain for compliance, regenerate, or pending decision / reason / where unique content goes
+Reference fixes (required): internal links, navigation, metadata, CI, generation pipelines, and known external references to update
+Open risks (required): contradictions, retention obligations, ownership, or unbacked content that current evidence cannot resolve
+Approval status (required): not approved; waiting for the user to confirm the exact list above
 ```
 
-完成清單後停止，等待使用者確認。未取得精確核准前，只能進行唯讀盤點；不得先整理一部分、移動檔案、刪除文件或改寫權威來源。
+Write the labels and values in the conversation's language. Stop after the list and wait for the user's confirmation. Until you have exact approval, do only the read-only inventory; do not clean up part of it first, move files, delete documents, or rewrite canonical sources.
 
-## 核准後執行
+## After approval
 
-1. 先更新權威文件，納入所有已確認仍正確的獨特內容，並在同一文件內消除重複與矛盾。
-2. 驗證權威文件內容完整後，更新所有內部連結、導覽、metadata、CI 與產生流程引用。
-3. 只執行核准清單內的搬移、改名與刪除；使用明確檔案路徑，不使用寬泛路徑、萬用字元或遞迴刪除命令。
-4. 若專案或環境要求逐檔刪除，逐一處理；需要批次刪除時，必須已有使用者對完整清單的明確授權。
-5. 不要另外建立清理報告、舊檔索引、對照表或封存副本。已納入版本控制的歷史由 Git 或專案既有歷史機制保存。
-6. 若執行中發現未列入清單的新風險或新文件，停止該項操作並重新取得確認，不要擴大授權範圍。
+1. Update the canonical documents first, bringing in all unique content confirmed as still correct, and remove duplication and contradictions within each document.
+2. After verifying the canonical documents are complete, update all internal links, navigation, metadata, CI, and generation-pipeline references.
+3. Perform only the moves, renames, and deletions on the approved list; use explicit file paths, not broad paths, wildcards, or recursive delete commands.
+4. If the project or environment requires per-file deletion, handle files one at a time; batch deletion requires the user's explicit authorization of the complete list.
+5. Do not create a cleanup report, old-file index, mapping table, or archive copy. Version-controlled history is kept by Git or the project's existing history mechanism.
+6. If you find a new risk or a document not on the list during execution, stop that operation and get confirmation again; do not widen the authorization.
 
-## 驗證與收尾
+## Verify and finish
 
-- 比較整理前後的文件數量，並說明減少數量；數量下降不是犧牲必要內容的理由。
-- 確認每項獨特且仍正確的內容都有明確去向。
-- 搜尋已移除或改名的路徑，確認內部連結、導覽、metadata、程式與 CI 沒有殘留引用。
-- 執行專案既有的文件 validator、連結檢查、文件建置或必要 smoke test。
-- 檢查編碼、格式與版本控制 diff，確保沒有亂碼、無關變更或生成來源與產物不同步。
-- 最終只回報保留、整併、移除、待決定的結果與驗證證據，不要再建立下一階段文件整理計畫。
+- Compare document counts before and after, and state the reduction; a lower count never justifies sacrificing necessary content.
+- Confirm that every piece of unique, still-correct content has a clear destination.
+- Search for removed or renamed paths and confirm no references remain in internal links, navigation, metadata, code, or CI.
+- Run the project's existing document validators, link checks, doc builds, or necessary smoke tests.
+- Check encoding, formatting, and the version-control diff to make sure there is no mojibake, no unrelated change, and no drift between generation sources and outputs.
+- In the final report, list only what was kept, merged, removed, and left pending, with verification evidence; do not create a plan for the next round of cleanup.
 
-當剩餘文件各自具有清楚責任、唯一真實來源不再重複、必要引用有效，且所有核准操作與驗證完成時，立即停止整理。若仍有未核准或無法安全判定的項目，明確列出並停止，不要用猜測完成清理。
+Stop as soon as every remaining document has a clear responsibility, the single source of truth is no longer duplicated, necessary references work, and all approved operations and verification are complete. If items remain unapproved or cannot be judged safely, list them and stop; do not finish the cleanup by guessing.
