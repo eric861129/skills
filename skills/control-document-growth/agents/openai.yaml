@@ -1,0 +1,4 @@
+interface:
+  display_name: "控制文件增生"
+  short_description: "優先維護既有文件，避免重複、零散與過度拆分的文件增生"
+  default_prompt: "使用 $control-document-growth 檢查這項工作是否真的需要新增文件，並優先更新既有文件。"

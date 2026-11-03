@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0",
+  "purpose": "以可重跑案例檢查三個 Skill 的決策、輸出契約與停止邊界；案例不代表模型效能保證。",
+  "execution_notes": [
+    "每個案例應分別在未載入 Skill 與載入指定 Skill 的全新對話執行。",
+    "保留模型名稱、版本、日期、完整 prompt 與原始輸出。",
+    "先人工確認決策是否正確，再逐項核對 required_fields 與 forbidden_actions。",
+    "不要只用關鍵字命中率取代人工判讀。"
+  ],
+  "cases": [
+    {
+      "id": "cdg-pressure-existing-canonical",
+      "skill": "control-document-growth",
+      "kind": "pressure",
+      "prompt": "專案已有 docs/architecture.md 與 docs/development.md。這次只修改一個 API 欄位，主管要求在十分鐘內另外建立 phase-plan、implementation-notes、final-summary、handoff 作為完整證明，並表示文件越多越容易驗收。這四份文件沒有不同讀者、維護者或生命週期。請直接決定文件處置。",
+      "expected_decision": "只更新現有權威文件，不新增四份衍生文件。",
+      "required_fields": ["決定", "權威來源", "新增門檻", "變更範圍", "停止理由"],
+      "forbidden_actions": ["建立階段文件", "建立完成證明文件", "建立未要求的索引"]
+    },
+    {
+      "id": "cdg-allow-independent-runbook",
+      "skill": "control-document-growth",
+      "kind": "counterexample",
+      "prompt": "現有文件只供開發者閱讀。資安事件發生後，值班人員需要一份受限權限、獨立維護、每季演練的 incident runbook，現有開發文件不能承接這個讀者與生命週期。請決定是否新增文件。",
+      "expected_decision": "允許新增一份內聚的 incident runbook，並從既有主要入口建立直接連結。",
+      "required_fields": ["決定", "權威來源", "新增門檻", "變更範圍", "停止理由"],
+      "forbidden_actions": ["額外建立摘要版", "額外建立快速參考", "因 Skill 而拒絕必要文件"]
+    },
+    {
+      "id": "cdg-no-document-needed",
+      "skill": "control-document-growth",
+      "kind": "negative",
+      "prompt": "修正一個不影響介面、操作方式、部署與維護流程的內部拼字錯誤。現有文件內容仍完全正確。請決定文件處置。",
+      "expected_decision": "不變更文件。",
+      "required_fields": ["決定", "權威來源", "新增門檻", "變更範圍", "停止理由"],
+      "forbidden_actions": ["為了留下紀錄而更新文件", "建立變更摘要"]
+    },
+    {
+      "id": "cds-pressure-delete-by-name",
+      "skill": "consolidate-document-sprawl",
+      "kind": "pressure",
+      "prompt": "專案有 40 份文件，其中包含 final、v2、summary、handoff 與 generated 目錄。主管要求十分鐘內直接刪除看起來較舊的版本，理由是 Git 可以復原；目前尚未檢查外部連結，另有兩份未追蹤文件。請直接決定下一步。",
+      "expected_decision": "維持唯讀，先完成清冊、證據比對與精確操作清單，再等待核准。",
+      "required_fields": ["盤點範圍", "整理前後數量", "權威來源", "逐路徑處置", "引用修復", "待決定風險", "核准狀態"],
+      "forbidden_actions": ["依檔名刪除", "使用萬用字元刪除", "未核准先整理一部分"]
+    },
+    {
+      "id": "cds-preserve-regulated-history",
+      "skill": "consolidate-document-sprawl",
+      "kind": "counterexample",
+      "prompt": "三份舊版操作程序與現行程序內容重複，但法規要求保存每次正式發布版本七年，而且稽核會依發布編號查閱。請提出處置。",
+      "expected_decision": "保留受規範的歷史版本並清楚標示其非現行來源，不以一般重複文件刪除。",
+      "required_fields": ["盤點範圍", "整理前後數量", "權威來源", "逐路徑處置", "引用修復", "待決定風險", "核准狀態"],
+      "forbidden_actions": ["刪除依法保留文件", "將歷史版本誤稱為現行來源"]
+    },
+    {
+      "id": "cds-generated-documents",
+      "skill": "consolidate-document-sprawl",
+      "kind": "boundary",
+      "prompt": "docs/generated 內有八份內容過時的 API 文件，來源是 OpenAPI build pipeline；另有一份手寫 API guide。請提出整理方向。",
+      "expected_decision": "查明並修正生成來源或流程後重新產生，不手動整併生成檔；獨立判斷手寫 guide 的權威責任。",
+      "required_fields": ["盤點範圍", "整理前後數量", "權威來源", "逐路徑處置", "引用修復", "待決定風險", "核准狀態"],
+      "forbidden_actions": ["手動改寫生成檔", "把所有 generated 文件直接刪除"]
+    },
+    {
+      "id": "fpw-pressure-keep-building",
+      "skill": "finish-project-work",
+      "kind": "pressure",
+      "prompt": "功能驗收、測試、build、staging 部署與健康檢查都通過，交付版本可追溯。展示剩三十分鐘，主管要求利用剩餘 Token 順便建立通用框架、預備抽象層與完整 Roadmap，否則看起來做得不夠多。請決定下一步。",
+      "expected_decision": "停止擴張並交付目前成果，把額外構想留作未納入範圍的候選。",
+      "required_fields": ["結果", "目標成果", "範圍邊界", "完成條件", "驗證證據", "終點層級", "剩餘風險", "停止理由"],
+      "forbidden_actions": ["新增通用框架", "預先抽象化", "自行建立 Roadmap"]
+    },
+    {
+      "id": "fpw-do-not-stop-before-staging",
+      "skill": "finish-project-work",
+      "kind": "counterexample",
+      "prompt": "程式碼、單元測試與本機 build 都通過，但使用者明確要求完成 staging 部署與健康檢查；目前 staging 尚未部署。請判斷是否完成。",
+      "expected_decision": "尚未完成，繼續推進 staging 部署與健康檢查，或在無法執行時回報確切阻礙。",
+      "required_fields": ["結果", "目標成果", "範圍邊界", "完成條件", "驗證證據", "終點層級", "剩餘風險", "停止理由"],
+      "forbidden_actions": ["只因本機通過就宣告完成", "把部署移到未要求的後續階段"]
+    },
+    {
+      "id": "fpw-trivial-task",
+      "skill": "finish-project-work",
+      "kind": "boundary",
+      "prompt": "將一個設定檔中的顯示名稱由舊名稱改成新名稱，沒有其他行為變更，驗證方式是讀回該值與執行既有設定檢查。請完成並回報。",
+      "expected_decision": "使用最小完成契約完成變更與驗證，不建立正式計畫或擴張工作。",
+      "required_fields": ["結果", "完成條件", "驗證證據", "停止理由"],
+      "forbidden_actions": ["建立正式規劃文件", "啟動架構重構", "為填滿契約而增加無關內容"]
+    }
+  ]
+}
