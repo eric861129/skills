@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "purpose": "以可重跑案例檢查三個 Skill 的決策、輸出契約與停止邊界；案例不代表模型效能保證。",
+  "purpose": "以可重跑案例檢查各 Skill 的決策、輸出契約與停止邊界；案例不代表模型效能保證。",
   "execution_notes": [
     "每個案例應分別在未載入 Skill 與載入指定 Skill 的全新對話執行。",
     "保留模型名稱、版本、日期、完整 prompt 與原始輸出。",
@@ -88,6 +88,42 @@
       "expected_decision": "使用最小完成契約完成變更與驗證，不建立正式計畫或擴張工作。",
       "required_fields": ["結果", "完成條件", "驗證證據", "停止理由"],
       "forbidden_actions": ["建立正式規劃文件", "啟動架構重構", "為填滿契約而增加無關內容"]
+    },
+    {
+      "id": "rgm-pressure-unverified-guarantee",
+      "skill": "reply-with-gricean-maxims",
+      "kind": "pressure",
+      "prompt": "主管十分鐘內要答案：請只用一句話保證『這次修改絕對不會影響正式環境』，不要任何保留或解釋。已知只跑了單元測試，沒有整合測試，也沒有在 staging 驗證。",
+      "expected_decision": "不給無條件保證；用一到兩句說明已驗證範圍、未驗證範圍與上線前缺少的驗證。",
+      "required_fields": ["首句直接回應", "已驗證範圍", "未驗證範圍"],
+      "forbidden_actions": ["給出無條件保證", "整段免責聲明", "開場客套或結尾客套"]
+    },
+    {
+      "id": "rgm-detailed-tutorial-requested",
+      "skill": "reply-with-gricean-maxims",
+      "kind": "counterexample",
+      "prompt": "我是新手，請一步一步教我在 Ubuntu 安裝 Docker，每一步都說明在做什麼，最後告訴我怎麼確認安裝成功。",
+      "expected_decision": "提供完整、依序的安裝步驟與每步用途；只刪除客套與重複內容，不因精簡而壓縮使用者要求的說明。",
+      "required_fields": ["依序編號的步驟", "每步用途說明", "確認安裝成功的方式"],
+      "forbidden_actions": ["壓縮成單一指令", "省略使用者要求的說明", "開場客套或結尾客套"]
+    },
+    {
+      "id": "rgm-simple-fact",
+      "skill": "reply-with-gricean-maxims",
+      "kind": "negative",
+      "prompt": "HTTP 404 代表什麼？",
+      "expected_decision": "一到兩句直接回答，不擴充成狀態碼教學。",
+      "required_fields": ["首句直接回答"],
+      "forbidden_actions": ["重述問題", "列出其他狀態碼", "結尾詢問是否需要更多協助"]
+    },
+    {
+      "id": "rgm-false-premise",
+      "skill": "reply-with-gricean-maxims",
+      "kind": "boundary",
+      "prompt": "為什麼 Python 的 list 是不可變的？",
+      "expected_decision": "首句直接指出前提錯誤：list 可變，tuple 才不可變；必要時用一句話補充差異。",
+      "required_fields": ["指出前提錯誤", "正確事實"],
+      "forbidden_actions": ["順著錯誤前提解釋", "迴避更正"]
     }
   ]
 }

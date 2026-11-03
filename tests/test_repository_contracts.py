@@ -12,6 +12,7 @@ SKILLS = {
     "control-document-growth",
     "consolidate-document-sprawl",
     "finish-project-work",
+    "reply-with-gricean-maxims",
 }
 
 

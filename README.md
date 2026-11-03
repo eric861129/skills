@@ -9,6 +9,7 @@
 | [`control-document-growth`](./skills/control-document-growth/) | Agent 準備建立、拆分或重寫文件時 | 優先更新既有權威文件，阻止不必要的新文件與版本堆疊 |
 | [`consolidate-document-sprawl`](./skills/consolidate-document-sprawl/) | 專案已出現重複、過時、矛盾或難以導覽的文件時 | 盤點並整併有效內容，在核准後安全移除多餘文件 |
 | [`finish-project-work`](./skills/finish-project-work/) | 執行多階段開發、重構、移轉或長時間目標任務時 | 以完成條件推進交付，限制無止境打底與範圍擴張 |
+| [`reply-with-gricean-maxims`](./skills/reply-with-gricean-maxims/) | 希望 AI 回覆明確、直接、減少廢話時 | 以格萊斯會話準則要求回覆真實、適量、切題且清楚 |
 
 ### control-document-growth
 
@@ -28,13 +29,22 @@ Skill 會先提出精確的整併與刪除清單並等待核准。核准後才�
 
 它要求每項工作直接推進可驗證成果，限制連續打底、預先抽象化與自行追加範圍。每完成一個批次就重新檢查完成閘門；條件通過後立即停止，不會因仍有時間或 Token 而繼續開發。
 
+### reply-with-gricean-maxims
+
+[`reply-with-gricean-maxims`](./skills/reply-with-gricean-maxims/SKILL.md) 把格萊斯會話準則轉成可執行的回覆規則：質（只說有根據的話）、量（剛好足夠）、關係（緊扣問題）、方式（清楚有條理），並規定準則衝突時以真實優先。
+
+它刪除開場客套、重述問題、無關延伸與重複總結，但不把「精簡」當成「越短越好」：使用者下一步需要的條件、風險與確切指令必須保留。檢查過程不寫進回覆。
+
+Skill 依 `description` 觸發，不會自動套用到所有對話。若希望每則回覆都遵守，可在對話開頭直接指定，或在 Agent 的全域指示檔（例如 `CLAUDE.md`、`AGENTS.md`）加入一行要求使用此 Skill。
+
 ### 搭配方式
 
-三個 Skill 可以單獨使用，也可以依工作階段搭配：
+這些 Skill 可以單獨使用，也可以依工作階段搭配：
 
 - 文件尚未失控：使用 `control-document-growth` 預防增生。
 - 文件已經堆疊：使用 `consolidate-document-sprawl` 完成盤點、整併與安全清理。
 - 任務需要真正收尾：使用 `finish-project-work` 建立終點並在驗證後停止。
+- 任何階段的回覆：使用 `reply-with-gricean-maxims` 讓回答與完成回報直接、適量且有根據。
 
 ## 安裝
 
@@ -64,7 +74,7 @@ cp -r skills/skills/finish-project-work <你的 Agent 的 skills 目錄>/
 
 ## 驗證與唯讀工具
 
-三個 Skill 都以對話內的固定輸出契約提供可核對的決策證據，不會為了回報自行建立新的專案文件。
+文件與收尾類的三個 Skill 以對話內的固定輸出契約提供可核對的決策證據，不會為了回報自行建立新的專案文件。`reply-with-gricean-maxims` 刻意不加輸出欄位，因為額外格式本身就違反量的準則；它的 eval 改為檢查回覆的可觀察特徵。
 
 [`evals/cases.json`](./evals/cases.json) 收錄壓力案例、反例、必要輸出欄位與禁止行為。案例應在全新對話中分別測試未載入與載入 Skill 的結果；fixture 通過不代表模型效能保證。
 
