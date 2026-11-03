@@ -1,6 +1,6 @@
 # Skills
 
-這裡收錄我自己寫、自己也在用的 Agent Skill，以開源方式公開。每個 Skill 都是 `skills/` 底下的獨立資料夾，核心是一份 `SKILL.md`，可以用在 Claude Code，也可以用在 Codex。
+這裡收錄我自己寫、自己也在用的 Agent Skill，以開源方式公開。每個 Skill 都是 `skills/` 底下的獨立資料夾，核心是一份 `SKILL.md`，不綁定特定工具，任何支援 `SKILL.md` 格式的 AI Agent 都能使用。
 
 ## Skill 一覽
 
@@ -8,7 +8,7 @@
 | --- | --- | --- |
 | [`control-document-growth`](./skills/control-document-growth/) | Agent 準備建立、拆分或重寫文件時 | 優先更新既有權威文件，阻止不必要的新文件與版本堆疊 |
 | [`consolidate-document-sprawl`](./skills/consolidate-document-sprawl/) | 專案已出現重複、過時、矛盾或難以導覽的文件時 | 盤點並整併有效內容，在核准後安全移除多餘文件 |
-| [`finish-project-work`](./skills/finish-project-work/) | 執行多階段開發、重構、移轉或 Goal 任務時 | 以完成條件推進交付，限制無止境打底與範圍擴張 |
+| [`finish-project-work`](./skills/finish-project-work/) | 執行多階段開發、重構、移轉或長時間目標任務時 | 以完成條件推進交付，限制無止境打底與範圍擴張 |
 
 ### control-document-growth
 
@@ -44,23 +44,23 @@ Skill 會先提出精確的整併與刪除清單並等待核准。核准後才�
 git clone https://github.com/eric861129/skills.git
 ```
 
-再把需要的 Skill 資料夾整個複製到 Agent 的 skills 目錄（以 `finish-project-work` 為例）。
-
-### Claude Code
+再把需要的 Skill 資料夾整個複製到你所用 Agent 的 skills 目錄，例如：
 
 ```bash
-cp -r skills/skills/finish-project-work ~/.claude/skills/
+cp -r skills/skills/finish-project-work <你的 Agent 的 skills 目錄>/
 ```
 
-放在 `~/.claude/skills/` 對所有專案生效；只想用在單一專案時，改放到該專案的 `.claude/skills/`。Claude 會依 `description` 自動載入，也可以輸入 `/finish-project-work` 直接呼叫。
+常見工具的使用者層級 skills 目錄：
 
-### Codex
+| Agent | Skills 目錄 |
+| --- | --- |
+| Claude Code | `~/.claude/skills/`（單一專案可放 `.claude/skills/`） |
+| Codex | `~/.codex/skills/` |
+| 其他支援 `SKILL.md` 的 Agent | 依該工具文件指定的位置 |
 
-```bash
-cp -r skills/skills/finish-project-work ~/.codex/skills/
-```
+安裝後，Agent 會依 `SKILL.md` 的 `description` 在符合的情境自動套用；也可以用各工具的方式直接指定 Skill 名稱，例如 `/finish-project-work` 或 `$finish-project-work`。
 
-在對話中以 `$finish-project-work` 呼叫。各 Skill 的 `agents/openai.yaml` 是 Codex 介面使用的顯示名稱與預設提示，Claude Code 會忽略它。
+部分 Skill 附有 `agents/openai.yaml`，只是提供給支援該格式的介面使用的顯示名稱與預設提示。它屬於選用 metadata，不支援的 Agent 會直接忽略，不影響 Skill 本身。
 
 ## 驗證與唯讀工具
 
@@ -81,3 +81,7 @@ python skills/consolidate-document-sprawl/scripts/inventory_documents.py <projec
 ```bash
 python -m unittest discover -s tests -v
 ```
+
+## 授權
+
+本 Repo 以 [MIT License](./LICENSE) 授權。
