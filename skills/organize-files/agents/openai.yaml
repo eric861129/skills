@@ -1,0 +1,4 @@
+interface:
+  display_name: "Organize Files"
+  short_description: "Inventory, plan, move, and report on a folder cleanup without deleting anything"
+  default_prompt: "Use $organize-files to inventory this folder, propose an organization plan I can approve, move the files safely (staging instead of deleting, retrying locked files), and report the final structure and anything I need to handle."

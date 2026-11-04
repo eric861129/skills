@@ -9,6 +9,7 @@ Agent skills I write and use myself. Each skill is a folder under `skills/` buil
 | [`control-document-growth`](./skills/control-document-growth/) | Stops document sprawl before it starts. When an agent is about to create, split, or rewrite docs, it updates the existing source of truth instead of adding phase notes, summaries, and "final" versions. |
 | [`consolidate-document-sprawl`](./skills/consolidate-document-sprawl/) | Cleans up sprawl that already exists. Inventories duplicate, stale, and conflicting docs, proposes an exact per-file plan, and merges or deletes only after you approve it. |
 | [`finish-project-work`](./skills/finish-project-work/) | Gets long tasks to a real finish. Sets done criteria up front, cuts endless groundwork and scope creep, and stops once verification passes. |
+| [`organize-files`](./skills/organize-files/) | Organizes a messy folder in four phases: inventory, an approved plan, the moves, and a report. Never deletes (duplicates go to a staging folder), retries and then skips locked files while naming the program holding them, and keeps an undo journal on your Desktop. |
 | [`reply-with-gricean-maxims`](./skills/reply-with-gricean-maxims/) | Makes replies direct and fluff-free using Grice's maxims: true, as informative as needed, relevant, and clear, without dropping details you need. |
 
 Each skill also ships a Traditional Chinese version, `SKILL.zh-TW.md`, next to its `SKILL.md`.
